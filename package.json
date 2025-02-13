@@ -4,7 +4,10 @@
   "displayName": "Hot Chocolate",
   "description": "A senior developer's comforting cup of sweet reusable code for Unity.",
   "unity": "6000.0",
-  "dependencies": {},
+  "dependencies": {
+    "com.unity.addressables": "2.2.2",
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  },
   "author": {
     "name": "Caroline Prenoveau",
     "email": "c.prenoveau@gmail.com",
