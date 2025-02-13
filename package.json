@@ -1,0 +1,13 @@
+{
+  "name": "com.cprenoveau.hotchocolate",
+  "version": "1.0.0",
+  "displayName": "Hot Chocolate",
+  "description": "A senior developer's comforting cup of sweet reusable code for Unity.",
+  "unity": "6000.0",
+  "dependencies": {},
+  "author": {
+    "name": "Caroline Prenoveau",
+    "email": "c.prenoveau@gmail.com",
+    "url": "https://github.com/cprenoveau/HotChocolate"
+  }
+}
