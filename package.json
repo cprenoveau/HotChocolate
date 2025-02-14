@@ -2,7 +2,7 @@
   "name": "com.cprenoveau.hotchocolate",
   "version": "1.0.0",
   "displayName": "Hot Chocolate",
-  "description": "A senior developer's comforting cup of sweet reusable code for Unity.",
+  "description": "A comforting cup of sweet reusable code for Unity.",
   "unity": "6000.0",
   "dependencies": {
     "com.unity.addressables": "2.2.2",
