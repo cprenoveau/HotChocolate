@@ -2,15 +2,12 @@
 using UnityEngine;
 using System.Linq;
 using System.Threading.Tasks;
-using UnityEngine.SceneManagement;
 using System.Threading;
 
 namespace HotChocolate.World
 {
     public sealed class SceneStack : MonoBehaviour
     {
-        public GameObject inputBlocker;
-
         public int Count => _stack.Count;
         public ISceneData Find(string id) => _stack.Find(m => m.SceneAddress == id);
         public int FindIndex(string id) => _stack.FindIndex(m => m.SceneAddress == id);
@@ -32,6 +29,7 @@ namespace HotChocolate.World
         private void OnDestroy()
         {
             _ctSource.Cancel();
+            _ctSource.Dispose();
         }
 
         public async Task Push(string sceneAddress)
@@ -47,9 +45,6 @@ namespace HotChocolate.World
                 return;
             }
 
-            if (inputBlocker != null)
-                inputBlocker.SetActive(true);
-
             var instance = await loadSceneTask(sceneAddress, _ctSource.Token).ConfigureAwait(true);
 
             if (_ctSource.IsCancellationRequested)
@@ -58,9 +53,6 @@ namespace HotChocolate.World
             _stack.Add(instance);
 
             OnScenePushed?.Invoke(instance);
-
-            if (inputBlocker != null)
-                inputBlocker.SetActive(false);
         }
 
         public async Task Jump(string sceneAddress, string fromSceneName)
@@ -91,12 +83,9 @@ namespace HotChocolate.World
             var targetMenuIndex = _stack.FindIndex(m => m.SceneAddress == fromSceneName);
             if (targetMenuIndex == -1)
             {
-                Debug.LogWarning("Jump: scene with name " + fromSceneName + " doesnt exist in the stack");
+                Debug.LogWarning("Jump: scene with name " + fromSceneName + " doesn't exist in the stack");
                 return;
             }
-
-            if (inputBlocker != null)
-                inputBlocker.SetActive(true);
 
             var instance = await loadSceneTask(sceneAddress, _ctSource.Token).ConfigureAwait(true);
 
@@ -109,22 +98,13 @@ namespace HotChocolate.World
                 await Pop(unloadSceneTask, loadSceneTask, focusOut: i == startIndex, focusIn: false).ConfigureAwait(true);
             }
 
-            if (inputBlocker != null)
-                inputBlocker.SetActive(true);
-
             _stack.Add(instance);
 
             OnScenePushed?.Invoke(instance);
-
-            if (inputBlocker != null)
-                inputBlocker.SetActive(false);
         }
 
         private async Task Jump(string sceneAddress, Scene.Unload unloadSceneTask, Scene.Load loadSceneTask)
         {
-            if (inputBlocker != null)
-                inputBlocker.SetActive(true);
-
             var instance = await loadSceneTask(sceneAddress, _ctSource.Token).ConfigureAwait(true);
 
             if (_ctSource.IsCancellationRequested)
@@ -136,20 +116,14 @@ namespace HotChocolate.World
             OnScenePopped?.Invoke(toPop);
             _stack.Clear();
 
-            if (inputBlocker != null)
-                inputBlocker.SetActive(true);
-
             _stack.Add(instance);
 
             OnScenePushed?.Invoke(instance);
-
-            if (inputBlocker != null)
-                inputBlocker.SetActive(false);
         }
 
         public async Task Pop()
         {
-            await Pop(unloadSceneDefault, loadSceneDefault, true , true).ConfigureAwait(true);
+            await Pop(unloadSceneDefault, loadSceneDefault, true, true).ConfigureAwait(true);
         }
 
         public async Task Pop(Scene.Unload unloadSceneTask, Scene.Load loadSceneTask)
@@ -163,9 +137,6 @@ namespace HotChocolate.World
             {
                 return;
             }
-
-            if (inputBlocker != null)
-                inputBlocker.SetActive(true);
 
             var toPop = Top;
             _stack.RemoveAt(_stack.Count - 1);
@@ -188,9 +159,6 @@ namespace HotChocolate.World
                     _stack[_stack.Count - 1] = instance;
                 }
             }
-
-            if (inputBlocker != null)
-                inputBlocker.SetActive(false);
         }
 
         public async Task PopAllAbove(string sceneName)
