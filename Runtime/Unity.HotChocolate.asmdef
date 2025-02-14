@@ -15,6 +15,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.olegknyazev.softmask",
+            "expression": "",
+            "define": "SOFTMASK"
+        }
+    ],
     "noEngineReferences": false
 }

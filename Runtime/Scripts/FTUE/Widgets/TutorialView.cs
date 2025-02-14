@@ -1,13 +1,15 @@
 ﻿using HotChocolate.Utils;
-using SoftMasking;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
+
+#if SOFTMASK
+using SoftMasking;
+#endif
 
 namespace HotChocolate.FTUE.Widgets
 {
@@ -21,7 +23,7 @@ namespace HotChocolate.FTUE.Widgets
         public RectTransform dialogueBoxAnchor;
         public RectTransform pointerAnchor;
         public Button continueButton;
-        public SoftMask mask;
+        public GameObject mask;
 
         public delegate Camera GetCameraDelegate(TData data);
         public GetCameraDelegate getCamera;
@@ -167,8 +169,10 @@ namespace HotChocolate.FTUE.Widgets
                     dialogBoxInstance.Init(worldHint.DialogueBubbleAnchor, worldHint.DialogueCharacterAnchor, worldHint.Dialogue, worldHint.CharacterName, worldHint.CharacterSprite);
                 }
 
+#if SOFTMASK
                 if (mask != null)
-                    mask.separateMask = pointerInstance.maskRect;
+                    mask.GetComponent<SoftMask>().separateMask = pointerInstance.maskRect;
+#endif
 
                 if (worldHint.Highlightable != null)
                     worldHint.Highlightable.StartHighlight();
@@ -324,8 +328,10 @@ namespace HotChocolate.FTUE.Widgets
                         dialogBoxInstance.Init(menuHint.DialogueBubbleAnchor, menuHint.DialogueCharacterAnchor, menuHint.Dialogue, menuHint.CharacterName, menuHint.CharacterSprite);
                     }
 
+#if SOFTMASK
                     if (mask != null)
-                        mask.separateMask = pointerInstance.maskRect;
+                        mask.GetComponent<SoftMask>().separateMask = pointerInstance.maskRect;
+#endif
 
                     IHighlightable highlightable = null;
                     if (menuHint.HighlightElement)
@@ -413,7 +419,7 @@ namespace HotChocolate.FTUE.Widgets
             continueButton.gameObject.SetActive(false);
 
             if (mask != null)
-                mask.gameObject.SetActive(false);
+                mask.SetActive(false);
 
             var dialogBoxInstance = dialogueBoxAnchor.GetComponentInChildren<TutorialDialogueBox>();
 
@@ -459,7 +465,7 @@ namespace HotChocolate.FTUE.Widgets
             blockInput?.Invoke(false);
 
             if (mask != null)
-                mask.gameObject.SetActive(true);
+                mask.SetActive(true);
         }
 
         private async Task UpdatePosition(TutorialPointer pointerInstance, TutorialHintBox hintBoxInstance, CancellationToken ct)

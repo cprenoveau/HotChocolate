@@ -6,8 +6,7 @@
   "unity": "6000.0",
   "dependencies": {
     "com.unity.addressables": "2.2.2",
-    "com.unity.nuget.newtonsoft-json": "3.2.1",
-    "com.olegknyazev.softmask": "1.7.0"
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
   },
   "author": {
     "name": "Caroline Prenoveau",
