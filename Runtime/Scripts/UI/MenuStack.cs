@@ -522,21 +522,17 @@ namespace HotChocolate.UI
             }
 
             var toPop = Top;
-
-            _stack.RemoveAt(_stack.Count - 1);
+            var newTop = _stack.Count > 1 ? _stack[_stack.Count - 2] : null;
 
             toPop.OnPop();
             OnMenuPopped?.Invoke(toPop);
 
-            if (_ctSource.IsCancellationRequested)
-                return;
-
-            if (_stack.Count > 0 && focusIn)
+            if (newTop != null && focusIn)
             {
-                Top.BeforeFocusIn.Invoke(Top);
-                Top.OnFocusIn(false, currentMenu);
-                Top.HasFocus = true;
-                OnMenuFocusChanged?.Invoke(Top, true);
+                newTop.BeforeFocusIn.Invoke(newTop);
+                newTop.OnFocusIn(false, currentMenu);
+                newTop.HasFocus = true;
+                OnMenuFocusChanged?.Invoke(newTop, true);
             }
 
             if (toPop.SoloDisplay)
@@ -544,11 +540,11 @@ namespace HotChocolate.UI
                 Menu.DeactivateInstance(toPop);
             }
 
-            await PlayTransition(focusOut && !toPop.SoloDisplay ? toPop : null, playOutAnimationTask, focusIn ? Top : null, playInAnimationTask).ConfigureAwait(true);
+            await PlayTransition(focusOut && !toPop.SoloDisplay ? toPop : null, playOutAnimationTask, focusIn ? newTop : null, playInAnimationTask).ConfigureAwait(true);
 
             if (toPop.SoloDisplay)
             {
-                if (Top != null && !Top.SoloDisplay)
+                if (newTop != null && !newTop.SoloDisplay)
                 {
                     foreach (var menu in _stack)
                     {
@@ -562,6 +558,8 @@ namespace HotChocolate.UI
             }
 
             await destroyInstanceTask(toPop, this, _ctSource.Token).ConfigureAwait(true);
+
+            _stack.RemoveAt(_stack.Count - 1);
 
             if (inputBlocker != null)
                 inputBlocker.SetActive(false);
