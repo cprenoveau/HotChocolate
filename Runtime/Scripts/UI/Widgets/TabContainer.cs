@@ -32,7 +32,7 @@ namespace HotChocolate.UI.Widgets
         {
             LastTabIndex = CurrentTabIndex = initialIndex;
 
-            _tabs = transform.GetComponentsInChildren<Tab>().ToList();
+            _tabs = transform.GetComponentsInChildren<Tab>(true).ToList();
 
             for (int i = 0; i < _tabs.Count; ++i)
             {
