@@ -80,12 +80,18 @@ namespace HotChocolate.UI.Widgets
         {
             if (index != CurrentTabIndex)
             {
-                _tabs[CurrentTabIndex].IsOn = false;
+                if (CurrentTabIndex >= 0 && CurrentTabIndex < _tabs.Count)
+                {
+                    _tabs[CurrentTabIndex].IsOn = false;
+                }
 
                 LastTabIndex = CurrentTabIndex;
                 CurrentTabIndex = index;
 
-                _tabs[CurrentTabIndex].IsOn = true;
+                if (CurrentTabIndex >= 0 && CurrentTabIndex < _tabs.Count)
+                {
+                    _tabs[CurrentTabIndex].IsOn = true;
+                }
 
                 OnTabSelected?.Invoke(index);
             }
