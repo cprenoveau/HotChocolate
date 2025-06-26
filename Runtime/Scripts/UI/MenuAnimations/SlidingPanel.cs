@@ -18,7 +18,7 @@ namespace HotChocolate.UI.MenuAnimations
         public SlidingPanelConfig pushConfig;
         public SlidingPanelConfig focusConfig;
 
-        private Vector3? originalPos;
+        private Vector2? originalPos;
 
         public bool Disposed { get; private set; }
         public IEnumerable<string> OnlyFromMenus => onlyFromMenus;
@@ -60,13 +60,13 @@ namespace HotChocolate.UI.MenuAnimations
         private IEnumerator InAnimationCoroutine(SlidingPanelConfig config, float delay)
         {
             if (!originalPos.HasValue)
-                originalPos = transform.localPosition;
+                originalPos = transform.GetComponent<RectTransform>().anchoredPosition;
 
             transform.localPosition = originalPos.Value + config.inStartPositionOffset;
 
             var clip = new Motion.ClipSequence();
 
-            var inAnimation = new Motion.Tween<Vector3>(config.inAnimationDuration - config.inOvershootDuration, transform.localPosition, originalPos.Value + config.inOvershoot, Vector3.Lerp, Motion.EasingUtil.EasingFunction(config.inAnimationEasing));
+            var inAnimation = new Motion.Tween<Vector2>(config.inAnimationDuration - config.inOvershootDuration, transform.localPosition, originalPos.Value + config.inOvershoot, Vector2.Lerp, Motion.EasingUtil.EasingFunction(config.inAnimationEasing));
             inAnimation.OnUpdate += UpdatePosition;
 
             if (config.inDelay + delay > 0)
@@ -76,9 +76,9 @@ namespace HotChocolate.UI.MenuAnimations
 
             clip.Append(inAnimation);
 
-            if (config.inOvershoot != Vector3.zero)
+            if (config.inOvershoot != Vector2.zero)
             {
-                var overshootAnimation = new Motion.Tween<Vector3>(config.inOvershootDuration, originalPos.Value + config.inOvershoot, originalPos.Value, Vector3.Lerp, Motion.EasingUtil.EasingFunction(config.inOvershootEasing));
+                var overshootAnimation = new Motion.Tween<Vector2>(config.inOvershootDuration, originalPos.Value + config.inOvershoot, originalPos.Value, Vector2.Lerp, Motion.EasingUtil.EasingFunction(config.inOvershootEasing));
                 overshootAnimation.OnUpdate += UpdatePosition;
                 clip.Append(overshootAnimation);
             }
@@ -92,11 +92,11 @@ namespace HotChocolate.UI.MenuAnimations
         private IEnumerator OutAnimationCoroutine(SlidingPanelConfig config, float delay)
         {
             if (!originalPos.HasValue)
-                originalPos = transform.localPosition;
+                originalPos = transform.GetComponent<RectTransform>().anchoredPosition;
 
             var clip = new Motion.ClipSequence();
 
-            var outAnimation = new Motion.Tween<Vector3>(config.outAnimationDuration - config.outOvershootDuration, transform.localPosition + config.outOvershoot, originalPos.Value + config.outEndPositionOffset, Vector3.Lerp, Motion.EasingUtil.EasingFunction(config.outAnimationEasing));
+            var outAnimation = new Motion.Tween<Vector2>(config.outAnimationDuration - config.outOvershootDuration, transform.GetComponent<RectTransform>().anchoredPosition + config.outOvershoot, originalPos.Value + config.outEndPositionOffset, Vector2.Lerp, Motion.EasingUtil.EasingFunction(config.outAnimationEasing));
             outAnimation.OnUpdate += UpdatePosition;
 
             if (config.outDelay + delay > 0)
@@ -104,9 +104,9 @@ namespace HotChocolate.UI.MenuAnimations
                 clip.Append(new Motion.Silence(config.outDelay + delay));
             }
 
-            if (config.outOvershoot != Vector3.zero)
+            if (config.outOvershoot != Vector2.zero)
             {
-                var overshootAnimation = new Motion.Tween<Vector3>(config.outOvershootDuration, transform.localPosition, transform.localPosition + config.outOvershoot, Vector3.Lerp, Motion.EasingUtil.EasingFunction(config.outOvershootEasing));
+                var overshootAnimation = new Motion.Tween<Vector2>(config.outOvershootDuration, transform.GetComponent<RectTransform>().anchoredPosition, transform.GetComponent<RectTransform>().anchoredPosition + config.outOvershoot, Vector2.Lerp, Motion.EasingUtil.EasingFunction(config.outOvershootEasing));
                 overshootAnimation.OnUpdate += UpdatePosition;
                 clip.Append(overshootAnimation);
             }
@@ -119,9 +119,9 @@ namespace HotChocolate.UI.MenuAnimations
             }
         }
 
-        private void UpdatePosition(Vector3 value, float progress)
+        private void UpdatePosition(Vector2 value, float progress)
         {
-            transform.localPosition = value;
+            transform.GetComponent<RectTransform>().anchoredPosition = value;
         }
     }
 }
