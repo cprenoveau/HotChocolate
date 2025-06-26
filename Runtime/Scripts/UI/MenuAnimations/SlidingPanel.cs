@@ -62,7 +62,7 @@ namespace HotChocolate.UI.MenuAnimations
             if (!originalPos.HasValue)
                 originalPos = transform.localPosition;
 
-            transform.localPosition += config.inStartPositionOffset;
+            transform.localPosition = originalPos.Value + config.inStartPositionOffset;
 
             var clip = new Motion.ClipSequence();
 
@@ -91,9 +91,12 @@ namespace HotChocolate.UI.MenuAnimations
 
         private IEnumerator OutAnimationCoroutine(SlidingPanelConfig config, float delay)
         {
+            if (!originalPos.HasValue)
+                originalPos = transform.localPosition;
+
             var clip = new Motion.ClipSequence();
 
-            var outAnimation = new Motion.Tween<Vector3>(config.outAnimationDuration - config.outOvershootDuration, transform.localPosition + config.outOvershoot, transform.localPosition + config.outEndPositionOffset, Vector3.Lerp, Motion.EasingUtil.EasingFunction(config.outAnimationEasing));
+            var outAnimation = new Motion.Tween<Vector3>(config.outAnimationDuration - config.outOvershootDuration, transform.localPosition + config.outOvershoot, originalPos.Value + config.outEndPositionOffset, Vector3.Lerp, Motion.EasingUtil.EasingFunction(config.outAnimationEasing));
             outAnimation.OnUpdate += UpdatePosition;
 
             if (config.outDelay + delay > 0)
