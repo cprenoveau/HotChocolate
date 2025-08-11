@@ -102,7 +102,7 @@ namespace HotChocolate.FTUE.Widgets
 
         private async Task ActivateWorldFtue(IWorldHint worldHint, CancellationToken ct)
         {
-            blocker.SetActive(true);
+            blocker.SetActive(false);
             blockInput?.Invoke(true);
 
             continueButton.gameObject.SetActive(false);
