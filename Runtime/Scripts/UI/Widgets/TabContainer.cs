@@ -42,6 +42,13 @@ namespace HotChocolate.UI.Widgets
             }
         }
 
+        public void Clear()
+        {
+            LastTabIndex = -1;
+            CurrentTabIndex = -1;
+            _tabs.Clear();
+        }
+
         public void AddTab(Tab tab)
         {
             _tabs.Add(tab);
